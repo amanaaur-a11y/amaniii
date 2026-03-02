@@ -769,7 +769,7 @@
 
         const SURCHARGES_CONFIG = {
             demandSurcharge: { name: 'Надбавка за спрос (Demand)', type: 'dynamic', rate: 0, isMain: true },
-            overweightPiece: { name: 'Массивный груз (≥70.1кг)', type: 'per_piece', rate: 100, isMain: true },
+            overweightPiece: { name: 'Массивный груз (≥70кг)', type: 'per_piece', rate: 100, isMain: true },
             heavyPiece: { name: 'Тяжелый груз (25-70кг)', type: 'per_piece', rate: 20, isMain: true },
             oversizePiece: { name: 'Негабарит (>85см)', type: 'per_piece', rate: 20, isMain: true },
             nonStackable: { name: 'Нештабелируемый груз', type: 'per_piece', rate: 300, isMain: true },
@@ -2376,16 +2376,7 @@
                 // --- АЛГОРИТМ ВЫБОРА НАДБАВКИ ---
                 
 
-                // Шаг 1: Проверка на МАССИВ (>= 70.1 кг расчетного веса)
-                // Важно: используется расчетный вес = max(физический, объемный)
-                const isOverweight = surchargeChgWeight >= SURCHARGE_THRESHOLDS.overweightMin;
 
-                // Шаг 2: Подготовка условий для ТЯЖЕЛЫЙ и НЕГАБАРИТ
-                // Тяжелый: расчетный вес 25-70 кг включительно (если >70, сработает МАССИВ)
-                const isHeavyCandidate = (
-                    surchargeChgWeight >= SURCHARGE_THRESHOLDS.heavyMin &&
-                    surchargeChgWeight <= SURCHARGE_THRESHOLDS.heavyMax
-                );
                 
                 // Негабарит: любая сторона > 85 см
                 const dims = [l, wd, h];
