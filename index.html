@@ -2376,6 +2376,16 @@
                 // --- АЛГОРИТМ ВЫБОРА НАДБАВКИ ---
                 
 
+                // Шаг 1: Проверка на МАССИВ (>= 70.1 кг расчетного веса)
+                // Важно: используется расчетный вес = max(физический, объемный)
+                const isOverweight = surchargeChgWeight >= SURCHARGE_THRESHOLDS.overweightMin;
+
+                // Шаг 2: Подготовка условий для ТЯЖЕЛЫЙ и НЕГАБАРИТ
+                // Тяжелый: расчетный вес 25-70 кг включительно (если >70, сработает МАССИВ)
+                const isHeavyCandidate = (
+                    surchargeChgWeight >= SURCHARGE_THRESHOLDS.heavyMin &&
+                    surchargeChgWeight <= SURCHARGE_THRESHOLDS.heavyMax
+                );
 
                 
                 // Негабарит: любая сторона > 85 см
@@ -2453,7 +2463,19 @@
             applyAutoSurcharge('oversizePiece', hasAnyPhysicalWeight ? oversizeCount : 0);
            
             updateSurchargeUI();
-           
+
+            // Fallback: если визуально страна выбрана, но state.country пуст (после merge/restore),
+            // пробуем восстановить код страны по подписи в trigger.
+            if (!state.country) {
+                const selectedLabel = (selectedCountryName?.textContent || '').trim().toLowerCase();
+                if (selectedLabel && selectedLabel !== 'поиск страны...') {
+                    const found = Object.entries(COUNTRIES_DATA).find(([code, data]) =>
+                        (data.ru && data.ru.toLowerCase() === selectedLabel) || data.name.toLowerCase() === selectedLabel
+                    );
+                    if (found) state.country = found[0];
+                }
+            }
+
             if (!state.country) {
                 renderResults(null);
                 state.lastResult = null;
