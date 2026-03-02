@@ -2369,13 +2369,18 @@
                 
                 // --- АЛГОРИТМ ВЫБОРА НАДБАВКИ ---
                 
+                // Единые пороги для весовых надбавок (чтобы не было рассинхрона при merge)
+                const OVERWEIGHT_THRESHOLD = 70.1;
+                const HEAVY_MIN = 25;
+                const HEAVY_MAX = 70;
+
                 // Шаг 1: Проверка на МАССИВ (>= 70.1 кг расчетного веса)
                 // Важно: используется расчетный вес = max(физический, объемный)
-                const isOverweight = surchargeChgWeight >= 70.1;
-                
+                const isOverweight = surchargeChgWeight >= OVERWEIGHT_THRESHOLD;
+
                 // Шаг 2: Подготовка условий для ТЯЖЕЛЫЙ и НЕГАБАРИТ
                 // Тяжелый: расчетный вес 25-70 кг включительно (если >70, сработает МАССИВ)
-                const isHeavyCandidate = (surchargeChgWeight >= 25 && surchargeChgWeight <= 70);
+                const isHeavyCandidate = (surchargeChgWeight >= HEAVY_MIN && surchargeChgWeight <= HEAVY_MAX);
                 
                 // Негабарит: любая сторона > 85 см
                 const dims = [l, wd, h];
