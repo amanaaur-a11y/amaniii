@@ -2376,6 +2376,7 @@
                 // --- АЛГОРИТМ ВЫБОРА НАДБАВКИ ---
                 
 
+
                 
                 // Негабарит: любая сторона > 85 см
                 const dims = [l, wd, h];
@@ -2415,6 +2416,9 @@
             const totalWeightForIcons = Math.max(totalActualWeight, totalVolumetricWeight);
             updateDynamicIcons(totalWeightForIcons);
 
+            // UX-правило: если пользователь обнулил весь физический вес, авто-надбавки по местам очищаются.
+            const hasAnyPhysicalWeight = state.pieces.some(piece => (parseFloat(piece.weight) || 0) > 0);
+
             const applyAutoSurcharge = (id, count) => {
                 // Инициализация, если нет в стейте
                 if (!state.selectedSurcharges[id]) {
@@ -2444,9 +2448,9 @@
                 }
             };
 
-            applyAutoSurcharge('overweightPiece', overweightCount);
-            applyAutoSurcharge('heavyPiece', heavyCount);
-            applyAutoSurcharge('oversizePiece', oversizeCount);
+            applyAutoSurcharge('overweightPiece', hasAnyPhysicalWeight ? overweightCount : 0);
+            applyAutoSurcharge('heavyPiece', hasAnyPhysicalWeight ? heavyCount : 0);
+            applyAutoSurcharge('oversizePiece', hasAnyPhysicalWeight ? oversizeCount : 0);
            
             updateSurchargeUI();
            
